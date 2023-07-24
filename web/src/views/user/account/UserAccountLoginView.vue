@@ -1,5 +1,6 @@
 <template>
-    <ContentField>
+    <!-- 没有拉取信息时，显示登录页 -->
+    <ContentField v-if="!$store.state.user.pulling_info">
         <div class="row justify-content-md-center">
             <div class="col-3">
                 <form @submit.prevent = "login">
@@ -33,6 +34,23 @@ export default {
         let username = ref("");//定义username初始为空
         let password = ref("");//定义password
         let error_message = ref("");//表示登录是否成功
+
+        const jwt_token = localStorage.getItem("jwt_token");
+        if(jwt_token){
+            store.commit("updateToken", jwt_token);
+            //判断jwt是否有效
+            store.dispatch("getinfo", {
+                success(){
+                    router.push({name:"home"}); //如果localStorage中有token，则在登录页跳到首页
+                    store.commit("updatePullingInfo", false); //拉取结束，先跳转页面的，所以看不到登录页白影
+                },
+                error(){
+                    store.commit("updatePullingInfo", false);
+                }
+            })
+        }else{
+            store.commit("updatePullingInfo", false);
+        }
 
         const login = () => { //定义 login 函数， 当页面提交时触发
             error_message.value = "";

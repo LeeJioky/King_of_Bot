@@ -26,7 +26,8 @@
           </ul>
         </li>
       </ul>
-      <ul class="navbar-nav" v-else>
+      <!-- 没有拉取信息时，显示登录和注册两个按钮 -->
+      <ul class="navbar-nav" v-else-if="!$store.state.user.pulling_info">
         <li class="nav-item">
           <router-link class="nav-link" :to="{name:'user_account_login'}" role="button">
             登录
