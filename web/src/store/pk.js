@@ -37,6 +37,7 @@ export default ({
     },
     updateGameObject(state, gameObject){
       state.gameObject = gameObject;
+      console.log(gameObject)
     },
     updateLoser(state, loser){
       state.loser = loser;

@@ -40,7 +40,8 @@ export default {
                     });
                     setTimeout(() => {
                         store.commit("updateStatus", "playing");
-                    }, 2000);//延迟2秒
+                        // console.log("playing")
+                    }, 200);//延迟2秒
                     // console.log("==========")
                     // console.log(data.game);
                     store.commit("updateGame", data.game)
@@ -55,6 +56,7 @@ export default {
                 }else if(data.event === 'result'){
                     console.log(data);
                     const game = store.state.pk.gameObject;
+                    console.log(game)
                     const [snake0, snake1] = game.Snakes;
 
                     if(data.loser == "all" || data.loser == "A"){
@@ -63,7 +65,6 @@ export default {
                     if(data.loser == "all" || data.loser == "B"){
                         snake1.status = "die";
                     }
-                    store.commit("updateLoser", data.loser);
                     store.commit("updateLoser", data.loser);
                 }
             }
