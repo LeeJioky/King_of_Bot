@@ -9,14 +9,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.kob</groupId>
-    <artifactId>backendcloud</artifactId>
+    <artifactId>matchingsystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backendcloud</name>
-    <description>backendcloud</description>
-    <packaging>pom</packaging>
+    <name>matchingsystem</name>
+    <packaging>jar</packaging>
+    <description>matchingsystem</description>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -45,8 +47,20 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--这里写上main方法所在类的路径-->
+                <configuration>
+                    <mainClass>com.kob.matchingsystem.MatchingSystemApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
 
 </project>

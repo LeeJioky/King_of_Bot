@@ -89,7 +89,8 @@ export class GameMap extends AcGameObject {
         //直接将地图取出--从后端传过来
         // console.log(this.store)
         const g = this.store.state.pk.gamemap;
-        // console.log(g)
+        console.log('dddd')
+        console.log(g)
         //创建障碍物对象，并添加到this.walls数组
         for(let r = 0; r<this.rows; r++){
             for(let c = 0; c<this.cols; c++){
@@ -102,21 +103,46 @@ export class GameMap extends AcGameObject {
     }
 
     add_listening_events(){
-        this.ctx.canvas.focus(); //聚焦
-        this.ctx.canvas.addEventListener("keydown", e=>{
-            console.log(e.key);
-            let d = -1;
-            if(e.key === 'w') d = 0;
-            else if(e.key === 'd') d = 1;
-            else if(e.key === 's') d = 2;
-            else if(e.key === 'a') d = 3;
-            if(d>=0){//有效输入
-                this.store.state.pk.socket.send(JSON.stringify({
-                    event:"move",
-                    direction:d
-                }))
-            }
-        });
+        console.log("gg");
+        if(this.store.state.record.is_record){
+            let k = 0;
+            const a_steps = this.store.state.record.a_steps;
+            const b_steps = this.store.state.record.b_steps;
+            const loser = this.store.state.record.record_loser;
+            const [snake0, snake1] = this.Snakes;
+            const interval_id = setInterval(() => {
+                if(k>= a_steps.length-1){
+                    if(loser === 'all' || loser === 'A'){
+                        snake0.status = 'die';
+                    }
+                    if(loser === 'all' || loser === 'B'){
+                        snake1.status = 'die';
+                    }
+                    clearInterval(interval_id); //结束后取消掉循环
+                }else{
+                    snake0.set_direction(parseInt(a_steps[k]));
+                    snake1.set_direction(parseInt(b_steps[k]));
+                }
+                k++;
+                console.log("hh");
+            }, 300); // 300ms执行一次
+        }else{
+            this.ctx.canvas.focus(); //聚焦
+            this.ctx.canvas.addEventListener("keydown", e=>{
+                console.log(e.key);
+                let d = -1;
+                if(e.key === 'w') d = 0;
+                else if(e.key === 'd') d = 1;
+                else if(e.key === 's') d = 2;
+                else if(e.key === 'a') d = 3;
+                if(d>=0){//有效输入
+                    this.store.state.pk.socket.send(JSON.stringify({
+                        event:"move",
+                        direction:d
+                    }))
+                }
+            });
+        }
     }
 
     check_valid(cell){
@@ -144,6 +170,7 @@ export class GameMap extends AcGameObject {
         //     if(this.crete_walls())
         //         break;
         // }
+        console.log("start")
         this.crete_walls();//不用循环1000次了，直接接收后端生成的
         this.add_listening_events();
     }

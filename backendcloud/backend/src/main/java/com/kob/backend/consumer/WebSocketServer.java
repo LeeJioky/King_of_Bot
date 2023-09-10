@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class WebSocketServer {
     private Session session = null;
     private User user;
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
     private static BotMapper botMapper;
     public static RecordMapper recordMapper;
     public static RestTemplate restTemplate;
