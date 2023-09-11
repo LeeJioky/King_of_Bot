@@ -62,7 +62,7 @@ export default {
 
         const refresh_bots = () => {
             $.ajax({
-                url:"http://127.0.0.1:3000/user/bot/getlist/",
+                url:"http://47.115.210.235/api/user/bot/getlist/",
                 type:"get",
                 headers:{
                     Authorization:"Bearer "+ store.state.user.token

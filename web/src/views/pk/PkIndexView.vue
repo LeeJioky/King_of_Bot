@@ -2,6 +2,8 @@
     <PlayGround v-if="$store.state.pk.status === 'playing'"/>
     <MatchGround v-if="$store.state.pk.status === 'matching'"/>
     <ResultBoard v-if="$store.state.pk.loser!='none'"/>
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.a_id) ">左下角</div>
+    <div class="user-color" v-if="$store.state.pk.status === 'playing' && parseInt($store.state.user.id) === parseInt($store.state.pk.b_id) ">右上角</div>
 </template>
 <script>
 import PlayGround from '@/components/PlayGround.vue';
@@ -11,19 +13,19 @@ import { useStore } from 'vuex';
 import { onMounted, onUnmounted } from 'vue';
 export default {
     components: {
-    PlayGround,
-    MatchGround,
-    ResultBoard
+        PlayGround,
+        MatchGround,
+        ResultBoard
 },
     setup(){
         const store = useStore();
-        const socketUrl = `ws://localhost:3000/websocket/${store.state.user.token}`;
+        const socketUrl = `ws://47.115.210.235/websocket/${store.state.user.token}`;
         store.commit("updateIsRecord", false);//表示不是录像界面
         let socket = null;
         onMounted(() => {
             store.commit("updateOpponent",{
                 username:"我的对手",
-                photo:"https://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png"
+                photo:"http://cdn.acwing.com/media/article/image/2022/08/09/1_1db2488f17-anonymous.png"
             })
             socket = new WebSocket(socketUrl);
             socket.onopen = () => {//如果连接成功，将socket存储到全局变量中
@@ -82,5 +84,10 @@ export default {
 }
 </script>
 <style scoped>
-    
+div.user-color {
+    text-align: center;
+    color: white;
+    font-size: 30px;
+    font-weight: 600;
+}
 </style>

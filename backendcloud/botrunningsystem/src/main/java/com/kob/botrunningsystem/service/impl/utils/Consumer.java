@@ -8,7 +8,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Component
 public class Consumer extends Thread {
@@ -35,7 +39,8 @@ public class Consumer extends Thread {
     }
 
     private String addUid(String code, String uid){//在BotCode的Bot类名之后添加uid
-        int k = code.indexOf(" implements com.kob.botrunningsystem.utils.BotInterface");
+//        int k = code.indexOf(" implements com.kob.botrunningsystem.utils.BotInterface");
+        int k = code.indexOf(" implements java.util.function.Supplier<Integer>");
         return code.substring(0, k) + uid + code.substring(k);
     }
 
@@ -44,11 +49,28 @@ public class Consumer extends Thread {
         UUID uuid = UUID.randomUUID();
         //类名之前添加一个随机字符串
         String uid = uuid.toString().substring(0, 8);
-        BotInterface botInterface = Reflect.compile(
+
+        Supplier<Integer> botInterface = Reflect.compile(
                 "com.kob.botrunningsystem.utils.Bot" + uid,
                 addUid(bot.getBotCode(),uid)
         ).create().get();//创建类后获取
-        Integer direction = botInterface.nextMove(bot.getInput());
+
+//        BotInterface botInterface = Reflect.compile(
+//                "com.kob.botrunningsystem.utils.Bot" + uid,
+//                addUid(bot.getBotCode(),uid)
+//        ).create().get();//创建类后获取
+
+        //通过文件读取参数
+        File file = new File("input.txt");
+        try(PrintWriter fout = new PrintWriter(file)){
+            fout.println(bot.getInput());
+            fout.flush();
+        } catch (FileNotFoundException e){
+            throw new RuntimeException(e);
+        }
+
+//        Integer direction = botInterface.nextMove(bot.getInput());
+        Integer direction = botInterface.get();
         System.out.println("bot-userId "  + bot.getUserId() + " move direction " + direction);
 
         //通过RestTemplate将结果返回主服务器
